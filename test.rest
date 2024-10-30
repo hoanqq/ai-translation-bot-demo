@@ -1,0 +1,18 @@
+POST http://localhost:8000/translate HTTP/1.1
+content-type: application/json
+
+{
+  "source_text": "In a recent judgement, the Criminal Court handed down a three-month suspended sentence.",
+  "source_language": "en",
+  "target_language": "ja"
+}
+
+###
+
+POST http://localhost:8000/feedback HTTP/1.1
+content-type: application/json
+
+{
+  "translation_id": "some_id.",
+  "feedback": "thumbs_up"
+}
