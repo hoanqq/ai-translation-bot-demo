@@ -6,7 +6,7 @@ This project is a demo repository for an AI Bot that helps with translation. The
 
 ### Prerequisites
 
-- Python 3.7 or higher
+- Python 3.10 or higher
 - Azure account with access to OpenAI GPT-4o-mini
 - API keys for Azure OpenAI
 
@@ -14,7 +14,7 @@ This project is a demo repository for an AI Bot that helps with translation. The
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/githubnext/workspace-blank.git
+   git clone https://github.com/jsburckhardt/ai-translation-bot-demo.git
    cd workspace-blank
    ```
 
