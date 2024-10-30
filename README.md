@@ -18,13 +18,7 @@ This project is a demo repository for an AI Bot that helps with translation. The
    cd workspace-blank
    ```
 
-2. Create and activate a virtual environment:
-   ```sh
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
-
-3. Install the dependencies:
+2. Install the dependencies:
    ```sh
    pip install -r requirements.txt
    ```
@@ -53,6 +47,44 @@ This project is a demo repository for an AI Bot that helps with translation. The
    streamlit run app.py  # For Streamlit
    # or
    python app.py  # For Gradio
+   ```
+
+### Using the Makefile
+
+You can use the provided `Makefile` to run the frontend and backend simultaneously.
+
+1. To run the frontend:
+   ```sh
+   make frontend
+   ```
+
+2. To run the backend:
+   ```sh
+   make backend
+   ```
+
+3. To run both frontend and backend:
+   ```sh
+   make both
+   ```
+
+### Development Environment
+
+This project includes a `.devcontainer` setup for development environments. The `.devcontainer` directory contains the necessary configuration files to set up a development container using Visual Studio Code and Docker.
+
+### Feedback Functionality
+
+The project includes feedback functionality implemented in both the backend and frontend. Users can provide feedback on translations using thumbs up or thumbs down buttons.
+
+### Testing API Endpoints
+
+You can use the `test.rest` file to test the API endpoints. The file contains sample requests for the translation and feedback endpoints.
+
+### Dependencies
+
+The `requirements.txt` file lists all the dependencies for the project. Make sure to install them using the following command:
+   ```sh
+   pip install -r requirements.txt
    ```
 
 ### Usage
