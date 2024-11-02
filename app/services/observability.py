@@ -14,6 +14,7 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.openai import OpenAIInstrumentor
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.metrics import Meter, MeterProvider
@@ -224,6 +225,7 @@ def instrument_application(app: FastAPI):
     _main_logger.info("Setting up OpenTelemetry instrumentation...")
     RequestsInstrumentor().instrument()
     HTTPXClientInstrumentor().instrument()
+    OpenAIInstrumentor().instrument()
     FastAPIInstrumentor.instrument_app(
         app,
         http_capture_headers_server_request=[".*"]
