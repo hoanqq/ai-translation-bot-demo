@@ -45,9 +45,6 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s[%(process)d] - %(levelname)s - %(message)s",
 )
 
-# See this for all the config options using environment variables: https://opentelemetry.io/docs/specs/otel/protocol/exporter/
-opentelemetry_exporter_otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
-
 
 def ensure_initialized():
     if not _has_already_init:
@@ -78,7 +75,7 @@ def get_meter():
 
 
 def initialize_observability(
-    mode: Literal["DEVELOPMENT", "PRODUCTION"], service_name: str = "ai.translator"
+    mode: Literal["DEVELOPMENT", "PRODUCTION"], service_name: str = "ai.translator", environment: str = "Unspecified"
 ):
     """Initializes the observability once for the lifetime of the application/process"""
     global \
@@ -97,13 +94,14 @@ def initialize_observability(
 
     run_mode = mode
     _main_logger.info(f"Initializing the observability with mode: {mode}")
+    # See this for all the config options using environment variables: https://opentelemetry.io/docs/specs/otel/protocol/exporter/
+    opentelemetry_exporter_otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 
     if opentelemetry_exporter_otlp_endpoint:
         _main_logger.info("🚀 Configuring OTLP telemetry")
         service_name = os.getenv(
             "OTEL_SERVICE_NAME", service_name
         )  # https://opentelemetry.io/docs/languages/sdk-configuration/general/#otel_service_name
-        app_environment = os.getenv("APP__ENVIRONMENT", "Unspecified")
         sample_ratio = float(
             os.getenv("OTEL_TRACES_SAMPLER_ARG", "1.0")
         )  # https://opentelemetry-python.readthedocs.io/en/latest/sdk/trace.sampling.html
@@ -113,7 +111,7 @@ def initialize_observability(
             attributes={
                 "service.name": service_name,  # https://opentelemetry.io/docs/specs/semconv/resource/#service
                 "service.namespace": "ai.translator",
-                "deployment.environment.name": app_environment,  # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
+                "deployment.environment.name": environment,  # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
                 "process.pid": str(
                     os.getpid()
                 ),  # https://opentelemetry.io/docs/specs/semconv/attributes-registry/process/

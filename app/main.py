@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 import os
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.observability import DEVELOPMENT_MODE, PRODUCTION_MODE, get_logger, initialize_observability, instrument_application
+from services.observability import DEVELOPMENT_MODE, PRODUCTION_MODE, get_logger, initialize_observability, instrument_application
 from routers.translate import translate_router
 from routers.feedback import feedback_router
 from fastapi import FastAPI
@@ -16,9 +16,9 @@ async def lifespan(app: FastAPI):
     # do the initialize logic here
 
     if app_environment.lower() == "development":
-        initialize_observability(DEVELOPMENT_MODE, service_name="AI Translator API")
+        initialize_observability(DEVELOPMENT_MODE, service_name="AI Translator API", environment=app_environment)
     else:
-        initialize_observability(PRODUCTION_MODE, service_name="AI Translator API")
+        initialize_observability(PRODUCTION_MODE, service_name="AI Translator API", environment=app_environment)
 
     logger = get_logger()
     logger.info("Starting API server...")
