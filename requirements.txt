@@ -6,3 +6,12 @@ streamlit==1.39.0
 openai==1.52.2
 prompty==0.1.34
 python-dotenv==1.0.1
+
+## OpenTelemetry
+opentelemetry-instrumentation-fastapi==0.48b0
+opentelemetry-api==1.27.0
+opentelemetry-sdk==1.27.0
+opentelemetry-exporter-otlp==1.27.0
+opentelemetry-instrumentation-requests==0.48b0
+opentelemetry-instrumentation-httpx==0.48b0
+opentelemetry-instrumentation-openai==0.33.5 # this is the traceloop one https://github.com/traceloop/openllmetry/tree/main/packages/opentelemetry-instrumentation-openai/opentelemetry/instrumentation/openai

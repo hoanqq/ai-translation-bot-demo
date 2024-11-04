@@ -1,0 +1,61 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:40317
+      http:
+        endpoint: 0.0.0.0:40318
+
+exporters:
+  debug:
+    verbosity: normal
+  otlp:
+    endpoint: "http://lgtm:4317"
+    tls:
+      insecure: true
+
+processors:
+  batch:
+  transform/redact_special: # This processor will redact any spans and span events with the given regex patterns
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/transformprocessor
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl#grammar
+    error_mode: ignore
+    trace_statements:
+      - context: span # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl/contexts/ottlspan
+        statements:          
+          # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl/ottlfuncs#replace_all_patterns
+          # Redact TFN (Tax File Number) from the attributes
+          - replace_all_patterns(attributes, "value", "\\b\\d{3}\\s?\\d{3}\\s?\\d{3}\\b", "{redacted}")
+      - context: spanevent # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl/contexts/ottlspanevent
+        statements:
+          # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl/ottlfuncs#replace_pattern
+          # Redact TFN (Tax File Number) from the name
+          - replace_pattern(name, "\\b\\d{3}\\s?\\d{3}\\s?\\d{3}\\b", "{redacted}")
+          # Redact TFN (Tax File Number) from the attributes
+          - replace_all_patterns(attributes, "value", "\\b\\d{3}\\s?\\d{3}\\s?\\d{3}\\b", "{redacted}")
+    log_statements:
+      - context: log
+        statements:
+          - replace_pattern(body.string, "\\b\\d{3}\\s?\\d{3}\\s?\\d{3}\\b", "{redacted}")
+          - replace_all_patterns(attributes, "value", "\\b\\d{3}\\s?\\d{3}\\s?\\d{3}\\b", "{redacted}")
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [transform/redact_special, batch]
+      exporters: [debug, otlp]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, otlp]
+    logs:
+      receivers: [otlp]
+      processors: [transform/redact_special, batch]
+      exporters: [debug, otlp]

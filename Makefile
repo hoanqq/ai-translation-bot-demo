@@ -1,4 +1,4 @@
-.PHONY: frontend backend both
+.PHONY: frontend backend both start-telemetry
 
 frontend:
 	cd frontend && streamlit run app.py
@@ -8,3 +8,7 @@ backend:
 
 both:
 	make -j2 frontend backend
+
+start-telemetry:
+	-docker compose down
+	docker compose up -d
