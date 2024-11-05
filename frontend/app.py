@@ -7,6 +7,7 @@ LANGUAGE_MAP = {
     'Spanish': 'es',
     'French': 'fr',
     'German': 'de',
+    'Japanese': 'ja',
     # Add more languages as needed
 }
 

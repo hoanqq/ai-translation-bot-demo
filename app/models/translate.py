@@ -15,3 +15,14 @@ class TranslateResponse(BaseModel):
 class FeedbackRequest(BaseModel):
     translation_id: str
     feedback: Literal['thumbs_up', 'thumbs_down']
+
+
+class EvaluationRequest(BaseModel):
+    requested_translation_text: str
+    translated_text: str
+    source_language: str
+    target_language: str
+
+
+class EvaluationResponse(BaseModel):
+    evaluation: str

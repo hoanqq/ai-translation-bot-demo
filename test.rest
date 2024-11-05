@@ -16,3 +16,42 @@ content-type: application/json
   "translation_id": "some_id.",
   "feedback": "thumbs_up"
 }
+
+###
+
+# evaluate the translation
+POST http://localhost:8000/evaluate HTTP/1.1
+Content-Type: application/json
+
+{
+  "requested_translation_text": "In a recent judgement, the Criminal Court handed down a three-month suspended sentence.",
+  "translated_text": "en el tiempo reciente, la corte payaso dio una sentencia suspendida de tres meses.",
+  "source_language": "en",
+  "target_language": "es"
+}
+
+###
+
+# Bad translation
+
+POST http://localhost:8000/translate HTTP/1.1
+content-type: application/json
+
+{
+  "source_text": "asdfa.",
+  "source_language": "en",
+  "target_language": "ja"
+}
+
+###
+
+# BAD evaluation
+POST http://localhost:8000/evaluate HTTP/1.1
+Content-Type: application/json
+
+{
+  "requested_translation_text": "asdfa.",
+  "translated_text": "申し訳ありませんが、そのリクエストにはお応えできません。",
+  "source_language": "en",
+  "target_language": "ja"
+}
