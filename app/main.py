@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from services.observability import DEVELOPMENT_MODE, PRODUCTION_MODE, get_logger, initialize_observability, instrument_application
 from routers.translate import translate_router
 from routers.feedback import feedback_router
+from routers.evaluation import evaluation_router
 from fastapi import FastAPI
 from dotenv import load_dotenv
 load_dotenv()
@@ -45,6 +46,7 @@ app.add_middleware(
 # Include the router
 app.include_router(translate_router)
 app.include_router(feedback_router)
+app.include_router(evaluation_router)
 
 
 @app.get("/")
