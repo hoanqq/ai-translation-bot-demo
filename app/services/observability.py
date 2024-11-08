@@ -14,7 +14,7 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
-from opentelemetry.instrumentation.openai import OpenAIInstrumentor
+from opentelemetry.instrumentation.openai_v2 import OpenAIInstrumentor
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.metrics import Meter, MeterProvider
@@ -88,7 +88,8 @@ def initialize_observability(
         ACTIVE_SERVICE_NAME
 
     if _has_already_init:
-        _main_logger.warning("Attempt made to initialize observability more than once")
+        _main_logger.warning(
+            "Attempt made to initialize observability more than once")
         return
 
     _has_already_init = True
@@ -96,7 +97,8 @@ def initialize_observability(
     run_mode = mode
     _main_logger.info(f"Initializing the observability with mode: {mode}")
     # See this for all the config options using environment variables: https://opentelemetry.io/docs/specs/otel/protocol/exporter/
-    opentelemetry_exporter_otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+    opentelemetry_exporter_otlp_endpoint = os.getenv(
+        "OTEL_EXPORTER_OTLP_ENDPOINT")
 
     if opentelemetry_exporter_otlp_endpoint:
         _main_logger.info("🚀 Configuring OTLP telemetry")
@@ -110,9 +112,11 @@ def initialize_observability(
         # setup the instrumentors
         resource = Resource.create(
             attributes={
-                "service.name": service_name,  # https://opentelemetry.io/docs/specs/semconv/resource/#service
+                # https://opentelemetry.io/docs/specs/semconv/resource/#service
+                "service.name": service_name,
                 "service.namespace": "ai.translator",
-                "deployment.environment.name": environment,  # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
+                # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
+                "deployment.environment.name": environment,
                 "process.pid": str(
                     os.getpid()
                 ),  # https://opentelemetry.io/docs/specs/semconv/attributes-registry/process/
@@ -124,7 +128,8 @@ def initialize_observability(
         # tracing
         trace.set_tracer_provider(
             TracerProvider(
-                resource=resource, sampler=ParentBasedTraceIdRatio(sample_ratio)
+                resource=resource, sampler=ParentBasedTraceIdRatio(
+                    sample_ratio)
             )
         )
         span_processor = BatchSpanProcessor(OTLPSpanExporter())
@@ -144,7 +149,8 @@ def initialize_observability(
         batch_log_record_processor = BatchLogRecordProcessor(OTLPLogExporter())
         logger_provider.add_log_record_processor(batch_log_record_processor)
 
-        handler = LoggingHandler(level=log_level, logger_provider=logger_provider)
+        handler = LoggingHandler(
+            level=log_level, logger_provider=logger_provider)
         # Attach OTLP handler to root logger
         logging.getLogger().addHandler(handler)
     else:
