@@ -7,6 +7,7 @@ from routers.feedback import feedback_router
 from routers.evaluation import evaluation_router
 from fastapi import FastAPI
 from dotenv import load_dotenv
+import services.azoai as azoai
 load_dotenv()
 
 # This method controls the lifecycle of the FastAPI app and is used to setup things post process fork
@@ -21,6 +22,7 @@ async def lifespan(app: FastAPI):
     else:
         initialize_observability(PRODUCTION_MODE, service_name="AI Translator API", environment=app_environment)
 
+    azoai.setup()
     logger = get_logger()
     logger.info("Starting API server...")
     yield

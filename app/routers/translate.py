@@ -11,7 +11,7 @@ async def translate(request: TranslateRequest) -> TranslateResponse:
     """Handle Translation query."""
     try:
 
-        return await azoai.translate(request)
+        return await azoai.instance.translate(request)
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Error processing query: {str(e)}")
