@@ -14,7 +14,7 @@ llm_instructions: |
   [optional footer(s)]
   ~~~
 
-  return ONLY and ONLY the commit message with no ~~~ or ```. You must only return the commit message with no external details.
+  return ONLY and ONLY the commit message with no ~~~ or ```. You must only return the commit message with no external details. DO NOT INCLUDE ANY MESSAGE ABOUT ISSUES.
 
   Example Usage:
 
