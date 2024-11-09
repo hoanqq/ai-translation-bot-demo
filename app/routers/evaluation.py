@@ -9,7 +9,7 @@ evaluation_router = APIRouter()
 async def evaluate(request: EvaluationRequest) -> EvaluationResponse:
     """Handle Evaluation query."""
     try:
-        return await azoai.evaluate_translation(request)
+        return await azoai.instance.evaluate_translation(request)
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Error processing query: {str(e)}")

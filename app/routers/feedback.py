@@ -3,7 +3,7 @@ import sys
 from fastapi import APIRouter, HTTPException
 from typing import Dict
 from models.translate import TranslateRequest, TranslateResponse, FeedbackRequest
-import services.azoai as azoai
+from services.azoai import AzureOpenAI
 
 feedback_router = APIRouter()
 
