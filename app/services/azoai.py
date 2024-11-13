@@ -90,6 +90,7 @@ class AzureOpenAIManager:
                 span.set_attributes(attributes)
                 span.set_attribute("source_text", source_text)
                 span.set_attribute("translated_text", target_response)
+                span.add_event(name="Translation", attributes={"end_reason": response.choices[0].finish_reason})
 
                 span.set_status(status=Status(StatusCode.OK))
                 return target_response

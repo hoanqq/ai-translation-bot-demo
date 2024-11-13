@@ -1,3 +1,7 @@
+# import .env file and export it to the environment
+include .env
+export
+
 .PHONY: frontend backend both start-telemetry
 
 frontend:
