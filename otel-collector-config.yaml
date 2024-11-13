@@ -8,7 +8,7 @@ receivers:
 
 exporters:
   debug:
-    verbosity: normal
+    verbosity: detailed
   otlp:
     endpoint: "http://lgtm:4317"
     tls:

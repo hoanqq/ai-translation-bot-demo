@@ -15,8 +15,11 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.openai_v2 import OpenAIInstrumentor
+from opentelemetry._logs import set_logger_provider
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from opentelemetry.sdk._events import EventLoggerProvider
+from opentelemetry._events import set_event_logger_provider
 from opentelemetry.sdk.metrics import Meter, MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.sdk.resources import Resource
@@ -148,6 +151,11 @@ def initialize_observability(
         logger_provider = LoggerProvider(resource=resource)
         batch_log_record_processor = BatchLogRecordProcessor(OTLPLogExporter())
         logger_provider.add_log_record_processor(batch_log_record_processor)
+        set_logger_provider(logger_provider)
+
+        # https://github.com/open-telemetry/opentelemetry-python/issues/4269
+        event_provider = EventLoggerProvider(logger_provider)
+        set_event_logger_provider(event_provider)
 
         handler = LoggingHandler(
             level=log_level, logger_provider=logger_provider)
