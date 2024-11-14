@@ -6,6 +6,8 @@ from typing import Dict, List, Literal
 
 from fastapi import FastAPI
 
+from .span_processors.evaluation_processor import AsyncFunctionCallSpanProcessor
+
 # OpenTelemetry
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
@@ -135,8 +137,8 @@ def initialize_observability(
                     sample_ratio)
             )
         )
-        span_processor = BatchSpanProcessor(OTLPSpanExporter())
-        trace.get_tracer_provider().add_span_processor(span_processor)
+        batch_span_processor = BatchSpanProcessor(OTLPSpanExporter())
+        trace.get_tracer_provider().add_span_processor(batch_span_processor)
         _main_tracer = trace.get_tracer_provider().get_tracer(service_name)
 
         # metrics
@@ -244,3 +246,27 @@ def instrument_application(app: FastAPI):
         app,
         http_capture_headers_server_request=[".*"]
     )
+
+
+def setup_async_function_call_processor(fn, request_builder, target_span_names=None, tracer_provider=None):
+    """
+    Creates and configures an AsyncFunctionCallSpanProcessor, then adds it to the tracer provider.
+
+    :param fn: The function to call on each span.
+    :param request_builder: Function to build a request from a span.
+    :param target_span_names: List of span names to trigger the function (default is all spans).
+    :param tracer_provider: Optional tracer provider. If not provided, uses the global tracer provider.
+    """
+
+    if tracer_provider is None:
+        tracer_provider = trace.get_tracer_provider()
+
+    async_processor = AsyncFunctionCallSpanProcessor(
+        fn=fn,
+        request_builder=request_builder,
+        target_span_names=target_span_names
+    )
+
+    tracer_provider.add_span_processor(async_processor)
+
+    return async_processor

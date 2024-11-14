@@ -1,9 +1,12 @@
-from openai import AzureOpenAI
 import os
 import time
+
+from openai import AzureOpenAI
+from opentelemetry.trace import StatusCode, Status
+from opentelemetry import trace
+
 from models.translate import TranslateRequest, TranslateResponse, EvaluationRequest, EvaluationResponse
-from .observability import get_logger, get_meter, get_tracer
-from opentelemetry.trace import Span, StatusCode, Status
+from .observability import get_logger, get_meter, get_tracer, setup_async_function_call_processor
 
 
 # Language code to language name mapping
@@ -179,6 +182,7 @@ class AzureOpenAIManager:
                 span.set_attribute("evaluation_score", evaluation_score)
 
                 span.set_status(status=Status(StatusCode.OK))
+                self.logger.info("Evaluation complete")
 
                 return {"evaluation": evaluation_score}
 
@@ -195,3 +199,19 @@ def setup():
     get_logger().info("Setting up AzureOpenAIManager")
     global instance
     instance = AzureOpenAIManager()
+
+    def evaluation_request_builder(span):
+        attributes = span.attributes
+        return EvaluationRequest(
+            requested_translation_text=attributes.get("source_text"),
+            translated_text=attributes.get("translated_text"),
+            source_language=attributes.get("source_language"),
+            target_language=attributes.get("target_language")
+        )
+
+    setup_async_function_call_processor(
+        fn=instance.evaluate_translation,
+        request_builder=evaluation_request_builder,
+        target_span_names=["translate_text"],
+        tracer_provider=trace.get_tracer_provider()
+    )
