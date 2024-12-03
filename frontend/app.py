@@ -38,12 +38,12 @@ if st.button("Translate"):
         st.error("Translation failed")
 
 # Feedback buttons
-if st.button("Thumbs Up"):
-    st.success("Thank you for your feedback!")
-    requests.post("http://localhost:8000/feedback",
-                  json={"translation_id": "some_id", "feedback": "thumbs_up"})
+# if st.button("Thumbs Up"):
+#     st.success("Thank you for your feedback!")
+#     requests.post("http://localhost:8000/feedback",
+#                   json={"translation_id": "some_id", "feedback": "thumbs_up"})
 
-if st.button("Thumbs Down"):
-    st.error("Thank you for your feedback!")
-    requests.post("http://localhost:8000/feedback/",
-                  json={"translation_id": "some_id", "feedback": "thumbs_down"})
+# if st.button("Thumbs Down"):
+#     st.error("Thank you for your feedback!")
+#     requests.post("http://localhost:8000/feedback/",
+#                   json={"translation_id": "some_id", "feedback": "thumbs_down"})
