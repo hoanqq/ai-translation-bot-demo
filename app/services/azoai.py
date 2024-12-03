@@ -26,13 +26,13 @@ class AzureOpenAIManager:
         self.latency_meter = get_meter().create_histogram(
             name="azoai_latency", description="Latency of Azure OpenAI requests", unit="ms")
         self.input_tokens_meter = get_meter().create_counter(name="azoai_input_tokens",
-                                                             description="Number of input tokens for Azure OpenAI requests", unit="tokens")
+                                                             description="Number of input tokens for Azure OpenAI requests", unit="1")
         self.output_tokens_meter = get_meter().create_counter(name="azoai_output_tokens",
-                                                              description="Number of output tokens for Azure OpenAI requests", unit="tokens")
+                                                              description="Number of output tokens for Azure OpenAI requests", unit="1")
         self.total_tokens_meter = get_meter().create_counter(name="azoai_total_tokens",
-                                                             description="Total number of tokens for Azure OpenAI requests", unit="tokens")
+                                                             description="Total number of tokens for Azure OpenAI requests", unit="1")
         self.evaluation_score_meter = get_meter().create_histogram(name="azoai_evaluation_score",
-                                                                   description="Evaluation score for Azure OpenAI requests", unit="score")
+                                                                   description="Evaluation score (as percentage) for Azure OpenAI requests", unit="1")
         self.logger.info("AzureOpenAI initialized")
 
     def translate_text(self, client: AzureOpenAI, deployment_id, source_language, target_language, source_text) -> str:
@@ -175,7 +175,7 @@ class AzureOpenAIManager:
                 self.total_tokens_meter.add(
                     amount=response.usage.total_tokens, attributes=attributes)
                 self.evaluation_score_meter.record(
-                    amount=evaluation_score*100, attributes=attributes)
+                    amount=evaluation_score * 100, attributes=attributes)
 
                 span.set_attributes(attributes)
                 span.set_attribute(
