@@ -93,7 +93,8 @@ class AzureOpenAIManager:
                 span.set_attributes(attributes)
                 span.set_attribute("source_text", source_text)
                 span.set_attribute("translated_text", target_response)
-                span.add_event(name="Translation", attributes={"end_reason": response.choices[0].finish_reason})
+                span.add_event(name="Translation", attributes={
+                               "end_reason": response.choices[0].finish_reason})
 
                 span.set_status(status=Status(StatusCode.OK))
                 return target_response
@@ -163,6 +164,7 @@ class AzureOpenAIManager:
                               "source_language": request.source_language, "target_language": request.target_language, "temperature": 0.5}
 
                 evaluation_score = float(response.choices[0].message.content)
+                print(f"Evaluation score: {evaluation_score}")
 
                 self.latency_meter.record(
                     amount=total_time_ms, attributes=attributes)
@@ -173,7 +175,7 @@ class AzureOpenAIManager:
                 self.total_tokens_meter.add(
                     amount=response.usage.total_tokens, attributes=attributes)
                 self.evaluation_score_meter.record(
-                    amount=evaluation_score, attributes=attributes)
+                    amount=evaluation_score*100, attributes=attributes)
 
                 span.set_attributes(attributes)
                 span.set_attribute(
