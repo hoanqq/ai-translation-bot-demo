@@ -156,8 +156,8 @@ def initialize_observability(
         set_logger_provider(logger_provider)
 
         # https://github.com/open-telemetry/opentelemetry-python/issues/4269
-        event_provider = EventLoggerProvider(logger_provider)
-        set_event_logger_provider(event_provider)
+        # event_provider = EventLoggerProvider(logger_provider)
+        # set_event_logger_provider(event_provider)
 
         handler = LoggingHandler(
             level=log_level, logger_provider=logger_provider)
@@ -208,33 +208,6 @@ def log_sensitive_data(
 
         span.set_attribute("message", message)
         span.set_attribute(SENSITIVE_DATA_INDICATOR_ATTRIBUTE_NAME, "true")
-
-
-def convert_to_metric_name(input_string: str) -> str:
-    """
-    Converts a string into a metric name compatible with OpenTelemetry.
-    # https://opentelemetry.io/docs/specs/otel/metrics/api/#instrument-name-syntax
-
-    Args:
-    input_string (str): The input string to be converted.
-
-    Returns:
-    str: The converted metric name.
-    """
-
-    # Remove leading and trailing whitespace
-    input_string = input_string.strip()
-    # Add leading alpha character
-    if not re.match(r"^[a-zA-Z]", input_string):
-        input_string = "A" + input_string
-    # Replace spaces with underscores
-    input_string = input_string.replace(" ", "_")
-    # Remove special characters and non-alphanumeric characters
-    input_string = re.sub(r"[^a-zA-Z0-9_]", "", input_string)
-    # Limit the length to 100 characters
-    input_string = input_string[:100]
-
-    return input_string
 
 
 def instrument_application(app: FastAPI):
