@@ -28,7 +28,7 @@ if st.button("Translate"):
         "target_language": LANGUAGE_MAP[target_language]
     }
 
-    response = requests.post("http://localhost:8000/translate", json=payload)
+    response = requests.post("https://ai-translation-bot.onrender.com/translate", json=payload)
 
     if response.status_code == 200:
         data = response.json()
